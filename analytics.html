@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Analyse!</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
+ <!-- Import tfjs-vis -->
+ <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis@1.0.2/dist/tfjs-vis.umd.min.js"></script>
+
+  </head>
+  <body>
+    <p>x values</p>
+    <input type="text" id="x" value=""><br><p>y values</p>
+    <input type="text" id="y" value=""><br>
+    <input type="submit" onclick="append()" id="submit" value="Enter">
+    <br>
+    <br>
+    <p>enter the number of layers</p>
+    <input type="text" id="layers" value=""><br>
+    <p>enter the units of the hidden layers of the neural network</p>
+    <input type="text" id="units" value="">
+    <br>
+    <br>
+    <button type="button" id="train" onclick="train()">Train the Model</button>
+    <br>
+    <br><br><br><br><br><p>x value thet you want a y value of:</p>
+    <input type="text" id="y-predict" value="">
+    <button type="button" id="predict" onclick="predict()">predict</button>
+    <br><br><br>
+    <span id="preds">the Predictions are:</span>
+    <script type="text/javascript">
+      const model = tf.sequential();
+      var x = [];
+      var y = [];
+      var x_element=document.getElementById('x').value;
+      var y_element=document.getElementById('y').value;
+      var num_of_layers=document.getElementById('layers').value;
+      var hidden_units=document.getElementById('units').value;
+      var y_pred=document.getElementById('y-predict').value;
+      function append(){
+        var x_element=parseInt(document.getElementById('x').value);
+        var y_element=parseInt(document.getElementById('y').value);
+          x.push(x_element);
+          y.push(y_element);
+          document.getElementById('x').value="";
+          document.getElementById('y').value="";
+      }
+      model.add(tf.layers.dense({inputShape: [1], units: 1, useBias: true}));
+      function add_layer(unis){
+        model.add(tf.layers.dense({ units: unis, useBias: true}));
+      }
+      function num_layer_add(){
+        var num_of_layers=parseInt(document.getElementById('layers').value);
+        var hidden_units=parseInt(document.getElementById('units').value);
+        let num_layers=num_of_layers;
+        let unit_no=hidden_units;
+        for(let i = 0;i < num_layers ; i++){
+          add_layer(unit_no);
+        }
+         model.add(tf.layers.dense({units: 1, useBias: true}));
+      }
+      function train(){
+      num_layer_add();
+      const inputTensor = tf.tensor2d(x, [x.length, 1]);
+      const labelTensor = tf.tensor2d(y, [y.length, 1]);
+      const learningRate = 0.01;
+const optimizer = tf.train.sgd(learningRate);
+
+      model.compile({
+      optimizer: optimizer,
+      loss: tf.losses.meanSquaredError,
+      metrics: ['mse'],
+ });
+ model.fit(inputTensor, labelTensor, {
+    epochs:1000,
+    shuffle: true
+});
+console.log("epoch")
+    }
+    var y_val;
+    function predict(){
+        var y_pred=parseInt(document.getElementById('y-predict').value);
+      var y_val=tf.tensor2d([y_pred], [1,1]);
+      document.getElementById('preds').innerHTML=model.predict(y_val).dataSync();
+    }
+    </script>
+  </body>
+</html>
