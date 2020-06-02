@@ -10,8 +10,13 @@
 
   </head>
   <body>
-    <p>x values</p>
-    <input type="text" id="x" value=""><br><p>y values</p>
+    <p>input 1 values:</p>
+    <input type="text" id="x" value="">
+    <p>input 2 values:</p>
+    <input type="text" id="i2" value="">
+    <p>input 3 values:</p>
+    <input type="text" id="i3" value="">
+    <br><p>output(prediction) values</p>
     <input type="text" id="y" value=""><br>
     <input type="submit" onclick="append()" id="submit" value="Enter">
     <br>
@@ -25,7 +30,12 @@
     <button type="button" id="train" onclick="train()">Train the Model</button>
     <br>
     <br><br><br><br><br><p>x value thet you want a y value of:</p>
-    <input type="text" id="y-predict" value="">
+    <p>input 1</p>
+    <input type="text" id="y-predict1" value="">
+    <p>input 2</p>
+    <input type="text" id="y-predict2" value="">
+    <p>input 3</p>
+    <input type="text" id="y-predict3" value="">
     <button type="button" id="predict" onclick="predict()">predict</button>
     <br><br><br>
     <span id="preds">the Predictions are:</span>
@@ -34,19 +44,23 @@
       var x = [];
       var y = [];
       var x_element=document.getElementById('x').value;
+      var x1_element=document.getElementById('i2').value;
+      var x2_element=document.getElementById('i3').value;
       var y_element=document.getElementById('y').value;
       var num_of_layers=document.getElementById('layers').value;
       var hidden_units=document.getElementById('units').value;
       var y_pred=document.getElementById('y-predict').value;
       function append(){
-        var x_element=parseInt(document.getElementById('x').value);
+        var x_element=document.getElementById('x').value;
+        var x1_element=document.getElementById('i2').value;
+        var x2_element=document.getElementById('i3').value;
         var y_element=parseInt(document.getElementById('y').value);
-          x.push(x_element);
+          x.push([x_element,x1_element,x2_element]);
           y.push(y_element);
           document.getElementById('x').value="";
           document.getElementById('y').value="";
       }
-      model.add(tf.layers.dense({inputShape: [1], units: 1, useBias: true}));
+      model.add(tf.layers.dense({inputShape: [3], units: 3, useBias: true}));
       function add_layer(unis){
         model.add(tf.layers.dense({ units: unis, useBias: true}));
       }
@@ -62,7 +76,7 @@
       }
       function train(){
       num_layer_add();
-      const inputTensor = tf.tensor2d(x, [x.length, 1]);
+      const inputTensor = tf.tensor3d(x, [x.length, 3]);
       const labelTensor = tf.tensor2d(y, [y.length, 1]);
       const learningRate = 0.01;
 const optimizer = tf.train.sgd(learningRate);
@@ -73,15 +87,17 @@ const optimizer = tf.train.sgd(learningRate);
       metrics: ['mse'],
  });
  model.fit(inputTensor, labelTensor, {
-    epochs:1000,
+    epochs:100,
     shuffle: true
 });
 console.log("epoch")
     }
     var y_val;
     function predict(){
-        var y_pred=parseInt(document.getElementById('y-predict').value);
-      var y_val=tf.tensor2d([y_pred], [1,1]);
+      var y_pred=parseInt(document.getElementById('y-predict1').value);
+      var y_pred=parseInt(document.getElementById('y-predict2').value);
+      var y_pred=parseInt(document.getElementById('y-predict3').value);
+      var y_val=tf.tensor2d([y_pred], [1,3]);
       document.getElementById('preds').innerHTML=model.predict(y_val).dataSync();
     }
     </script>
