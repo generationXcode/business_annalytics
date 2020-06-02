@@ -97,9 +97,9 @@ console.log("epoch")
     var y_val;
     function predict(){
       var y_pred=parseInt(document.getElementById('y-predict1').value);
-      var y_pred=parseInt(document.getElementById('y-predict2').value);
-      var y_pred=parseInt(document.getElementById('y-predict3').value);
-      var y_val=tf.tensor2d([y_pred], [1,3]);
+      var y_pred1=parseInt(document.getElementById('y-predict2').value);
+      var y_pred2=parseInt(document.getElementById('y-predict3').value);
+      var y_val=tf.tensor2d([y_pred,y_pred1,y_pred2], [1,3]);
       document.getElementById('preds').innerHTML=model.predict(y_val).dataSync();
     }
     </script>
