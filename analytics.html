@@ -78,7 +78,7 @@
       }
       function train(){
       num_layer_add();
-      const inputTensor = tf.tensor3d(x, [x.length, 3]);
+      const inputTensor = tf.tensor2d(x, [x.length, 3]);
       const labelTensor = tf.tensor2d(y, [y.length, 1]);
       const learningRate = 0.01;
 const optimizer = tf.train.sgd(learningRate);
